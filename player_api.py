@@ -47,7 +47,13 @@ class AudioplayerWindow(tk.Frame):
 
 
         tk.Button(bot_frame, text='Play', width=10) \
+            .grid(row=0, column=1, sticky=tk.E, padx=20, pady=5)
+
+        tk.Button(bot_frame, text='Help', width=10) \
             .grid(row=0, column=2, sticky=tk.E, padx=20, pady=5)
+
+        tk.Button(bot_frame, text='Create Playlist', width=10) \
+            .grid(row=1, column=1, sticky=tk.E, padx=20, pady=5)
 
     def display_student_name(self, name):
         """ Put the name in the name label """
