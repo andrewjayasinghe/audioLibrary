@@ -1,4 +1,4 @@
-from audio_library_3 import AudioLibrary
+from completed_library import AudioLibrary
 import vlc
 import os
 
