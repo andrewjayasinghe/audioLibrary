@@ -1,9 +1,14 @@
 from completed_library import AudioLibrary
 import vlc
 import os
+from player_window import AudioplayerWindow
+import tkinter as tk
+from tkinter import messagebox
+from tkinter.filedialog import askopenfilename
+from flask import request
+import requests
 
-
-class AudioPlayer:
+class AudioPlayer(tk.Frame):
     """
     This is a better Audio Player (ie: better than the first simple player
     we used. This class consists of a number of commands to instantiate and
@@ -20,6 +25,9 @@ class AudioPlayer:
     """
 
     def __init__(self, media_path):
+        tk.Frame.__init__(self)
+        self._root_win = tk.Toplevel()
+        self._player_window = AudioplayerWindow(self._root_win, self)
         print("Starting the Audio Player ...")
         self._vlc_instance = vlc.Instance()
         self._player = self._vlc_instance.media_player_new()
@@ -29,34 +37,36 @@ class AudioPlayer:
         self._current_title = None
         print("\nWelcome to the Audio Player.\n")
 
-    def do_list(self, args):
+    def do_list(self):
         """ List all song titles with numbers for playback etc """
         tags = []
         for title in sorted(self._library.titles()):
             tags.append(self._library.get_song(title).meta_data())
+
         col1_width = max([len(tag['title']) for tag in tags])
+
         col2_width = max([len(tag['artist']) for tag in tags])
         col3_width = max([len(tag['album']) for tag in tags])
 
-        print(f" Num  "
-              f"{'Title':{col1_width}}  "
-              f"{'Artist':{col2_width}}  "
-              f"{'Album':{col3_width}}  "
-              f"{'Duration':8}")
-        print(f"----  "
-              f"{'-' * col1_width:{col1_width}}  "
-              f"{'-' * col2_width:{col2_width}}  "
-              f"{'-' * col3_width:{col3_width}}  "
-              f"{'-' * 8:8}")
+        # print(f" Num  "
+        #       f"{'Title':{col1_width}}  "
+        #       f"{'Artist':{col2_width}}  "
+        #       f"{'Album':{col3_width}}  "
+        #       f"{'Duration':8}")
+        # print(f"----  "
+        #       f"{'-' * col1_width:{col1_width}}  "
+        #       f"{'-' * col2_width:{col2_width}}  "
+        #       f"{'-' * col3_width:{col3_width}}  "
+        #       f"{'-' * 8:8}")
+        box = []
         for i, tag in enumerate(tags):
-            print(f"{i + 1:3}.  "
-                  f"{tag['title']:{col1_width}}  "
-                  f"{tag['artist']:{col2_width}}  "
-                  f"{tag['album']:{col3_width}}  "
-                  f"{tag['runtime']:>6}")
+            box.append(f"{i+1}. {tag['title']}")
+        self._player_window.set_names(box)
 
-    def do_play(self, num):
+
+    def do_play(self):
         """Play a song specified by number. """
+        num = self._player_window.get_number.get()
         title = self._get_title_from_num(num)
         if title is None:
             print(f"Invalid song num: {num}. Syntax is: play song_num. Use "
@@ -84,19 +94,19 @@ class AudioPlayer:
             title = None
         return title
 
-    def do_pause(self, args):
+    def do_pause(self):
         """ Pause the player """
         if self._player.get_state() == vlc.State.Playing:
             self._player.pause()
         print(f"Player paused during playback of {self._current_title}")
 
-    def do_resume(self, args):
+    def do_resume(self):
         """ Resume playing """
         if self._player.get_state() == vlc.State.Paused:
             self._player.pause()
         print(f"Playback of {self._current_title} resumed")
 
-    def do_stop(self, args):
+    def do_stop(self):
         """ Stop the player """
         self._player.stop()
         print(f"Player stopped")
@@ -180,5 +190,6 @@ class AudioPlayer:
 
 if __name__ == "__main__":
     media_path = os.path.join(os.getcwd(), "mp3")   # path to a dir with mp3's
-    player = AudioPlayer(media_path)
-    player.cmdloop()
+    root = tk.Tk()
+    AudioPlayer(media_path).pack()
+    tk.mainloop()
