@@ -58,8 +58,8 @@ class AudioPlayer(tk.Frame):
         num = names[0]#self._player_window.get_number.get()
         title = self._get_title_from_num(num)
         if title is None:
-            print(f"Invalid song num: {num}. Syntax is: play song_num. Use "
-                  f"list to get song_num's.")
+            msg_str = f"No song selected.Use list songs to get the songs."
+            messagebox.showinfo(title='Error', message=msg_str)
             return
         song = self._library.get_song(title)
 
@@ -169,8 +169,8 @@ class AudioPlayer(tk.Frame):
         eval(command)
 
     def que_popup(self):
-        self._class_win = tk.Toplevel()
-        self._class = ClasslistWindow(self._class_win)
+        self._que_win = tk.Toplevel()
+        self._que = ClasslistWindow(self._que_win,self)
 
     @staticmethod
     def _valid_cmd(cmd):
@@ -179,6 +179,11 @@ class AudioPlayer(tk.Frame):
             return True
         else:
             return False
+
+
+    def _close_window(self):
+        """This is for closing the window"""
+        self._que_win.destroy()
 
 
 if __name__ == "__main__":

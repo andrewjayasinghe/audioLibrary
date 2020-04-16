@@ -1,17 +1,18 @@
 import tkinter as tk
 from tkinter import messagebox
 import requests
+from add_song import AddSongWindow
 
 
 class ClasslistWindow(tk.Frame):
 
-    def __init__(self, parent):
+    def __init__(self, parent,my_controller):
         """ Initialize the popup listbox window """
         tk.Frame.__init__(self, parent)
 
 
         parent.title('List')
-        parent.geometry("200x500")
+        parent.geometry("300x300")
 
 
         self.top_frame = tk.Frame(self.master)
@@ -25,7 +26,7 @@ class ClasslistWindow(tk.Frame):
         self.name_scrollbar.config(command=self.name_listbox.yview)
         self.name_listbox.config(yscrollcommand=self.name_scrollbar.set)
 
-        self.close_button = tk.Button(self.bot_frame, text='Close', width=15)
+        self.close_button = tk.Button(self.bot_frame, text='Close', width=15, command= my_controller._close_window )
 
         self.delete_button = tk.Button(self.bot_frame, text='Remove from Que', width=15)
 
@@ -56,6 +57,7 @@ class ClasslistWindow(tk.Frame):
     def add_popup(self):
         """This is for opening the add student popup"""
         self._add_win = tk.Toplevel()
+        self._add = AddSongWindow(self._add_win)
 
 
     def _close_window(self):

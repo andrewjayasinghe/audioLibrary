@@ -37,9 +37,7 @@ class AudioplayerWindow(tk.Frame):
         tk.Label(top_frame, text='File:').grid(row=0, column=0, sticky=tk.E, padx=5, pady=5)
         self._file_value = tk.Label(top_frame, text='')
         self._file_value.grid(row=0, column=1, sticky=tk.W, padx=5, pady=5)
-        # tk.Label(mid_frame, text='Song Number:').grid(row=0, column=0, sticky=tk.E, padx=5, pady=5)
-        # self._name_value = tk.Entry(mid_frame)
-        # self._name_value.grid(row=0, column=1, sticky=tk.W, padx=5, pady=5)
+
 
         self.listbox = tk.Listbox(top_frame, width=40, selectmode=tk.BROWSE)
         self.listbox.grid(row=0, column=1, sticky=tk.E, padx=20, pady=5)
@@ -67,7 +65,7 @@ class AudioplayerWindow(tk.Frame):
 
     def display_help(self):
         """ Put the name in the name label """
-        msg_str = 'Type the song number and ' \
+        msg_str = 'Click list songs then select and ' \
                   '\n hit the play button'
         messagebox.showinfo(title='Help', message=msg_str)
 
@@ -80,10 +78,7 @@ class AudioplayerWindow(tk.Frame):
         for name in names:
             self.listbox.insert(tk.END, name)
 
-    # @property
-    # def get_number(self):
-    #     return self._name_value
-
     @property
     def get_listbox(self):
+        """Getter for listbox"""
         return self.listbox
