@@ -115,7 +115,11 @@ class MainAppController(tk.Frame):
         self._songlist = SonglistWindow(self._song_win, self)
         response = requests.get("http://localhost:5000/song/all")
         song_list = [f'{s["title"]}' for s in response.json()]
+<<<<<<< Updated upstream
         self._songlist.set_names(song_list)
+=======
+        self._songlist.set_songs(song_list)
+>>>>>>> Stashed changes
 
     def song_details_popup(self):
         index = self._songlist.selected_listbox()
@@ -131,6 +135,7 @@ class MainAppController(tk.Frame):
 
         selected_song = songs.json()[index]
         self._songlist.selected_song_info(selected_song)
+<<<<<<< Updated upstream
         
         # response = requests.delete("http://localhost:5000/student/" + selected_student["student_id"])
         # 
@@ -138,6 +143,28 @@ class MainAppController(tk.Frame):
         #     self._class.update_listbox()
         #     msg_str = f'{selected_student["first_name"]} deleted from the database'
         #     messagebox.showinfo(title='Delete Student', message=msg_str)
+=======
+
+    def search_song(self):
+        attributes = ("title", "artist", "album", "genre")
+        searched_songs = []
+
+        keyword = self._songlist.search_keyword()
+        songs = requests.get("http://localhost:5000/song/all")
+
+        if keyword != "":
+            for song in songs.json():
+                for attr in song:
+                    if attr in attributes and keyword in song[attr]:
+                        if song not in searched_songs:
+                            searched_songs.append(song)
+            song_list = [f'{s["title"]}' for s in searched_songs]
+            self._songlist.set_songs(song_list)
+        else:
+            song_list = [f'{s["title"]}' for s in songs.json()]
+            self._songlist.set_songs(song_list)
+
+>>>>>>> Stashed changes
 
     # def classlist_popup(self, event):
     #     """ Show Classlist Popup Window """
