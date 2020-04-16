@@ -42,22 +42,6 @@ class AudioPlayer(tk.Frame):
         tags = []
         for title in sorted(self._library.titles()):
             tags.append(self._library.get_song(title).meta_data())
-
-        col1_width = max([len(tag['title']) for tag in tags])
-
-        col2_width = max([len(tag['artist']) for tag in tags])
-        col3_width = max([len(tag['album']) for tag in tags])
-
-        # print(f" Num  "
-        #       f"{'Title':{col1_width}}  "
-        #       f"{'Artist':{col2_width}}  "
-        #       f"{'Album':{col3_width}}  "
-        #       f"{'Duration':8}")
-        # print(f"----  "
-        #       f"{'-' * col1_width:{col1_width}}  "
-        #       f"{'-' * col2_width:{col2_width}}  "
-        #       f"{'-' * col3_width:{col3_width}}  "
-        #       f"{'-' * 8:8}")
         box = []
         for i, tag in enumerate(tags):
             box.append(f"{i+1}. {tag['title']}")
@@ -66,7 +50,10 @@ class AudioPlayer(tk.Frame):
 
     def do_play(self):
         """Play a song specified by number. """
-        num = self._player_window.get_number.get()
+        listbox = self._player_window.get_listbox
+        active = listbox.get(tk.ACTIVE)
+        names = active.split('.')
+        num = names[0]#self._player_window.get_number.get()
         title = self._get_title_from_num(num)
         if title is None:
             print(f"Invalid song num: {num}. Syntax is: play song_num. Use "
@@ -111,7 +98,7 @@ class AudioPlayer(tk.Frame):
         self._player.stop()
         print(f"Player stopped")
 
-    def do_quit(self, args):
+    def do_quit(self):
         """ Terminate the program """
         self._player.stop()
         self._player.release()
