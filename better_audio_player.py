@@ -2,11 +2,14 @@ from completed_library import AudioLibrary
 import vlc
 import os
 from player_window import AudioplayerWindow
+from song_que_window import ClasslistWindow
 import tkinter as tk
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from flask import request
 import requests
+
+COUNTER = 0
 
 class AudioPlayer(tk.Frame):
     """
@@ -35,10 +38,12 @@ class AudioPlayer(tk.Frame):
         self._library = AudioLibrary()
         self._library.load()
         self._current_title = None
+        # self.counter_label(self._player_window.get_lable)
         print("\nWelcome to the Audio Player.\n")
 
     def do_list(self):
         """ List all song titles with numbers for playback etc """
+        self._player_window.get_listbox.delete(0, tk.END)
         tags = []
         for title in sorted(self._library.titles()):
             tags.append(self._library.get_song(title).meta_data())
@@ -53,22 +58,24 @@ class AudioPlayer(tk.Frame):
         listbox = self._player_window.get_listbox
         active = listbox.get(tk.ACTIVE)
         names = active.split('.')
-        num = names[0]#self._player_window.get_number.get()
+        num = names[0]
         title = self._get_title_from_num(num)
         if title is None:
-            print(f"Invalid song num: {num}. Syntax is: play song_num. Use "
-                  f"list to get song_num's.")
+            msg_str = f"No song selected.Use list songs to get the songs."
+            messagebox.showinfo(title='Error', message=msg_str)
             return
         song = self._library.get_song(title)
-
         if self._player.get_state() == vlc.State.Playing:
             self._player.stop()
+            COUNTER = 0
         media_file = song.get_location()
         media = self._vlc_instance.media_new_path(media_file)
         self._player.set_media(media)
         self._player.play()
         self._current_title = title
         print(f"Playing {title} from file {media_file}")
+        self._get_current_posn()
+
 
     def _get_title_from_num(self, num):
         """ Find the title of a song, given its song number (as displayed
@@ -87,16 +94,22 @@ class AudioPlayer(tk.Frame):
             self._player.pause()
         print(f"Player paused during playback of {self._current_title}")
 
+
     def do_resume(self):
         """ Resume playing """
         if self._player.get_state() == vlc.State.Paused:
             self._player.pause()
         print(f"Playback of {self._current_title} resumed")
+        self._get_current_posn()
+
 
     def do_stop(self):
         """ Stop the player """
         self._player.stop()
         print(f"Player stopped")
+        global COUNTER
+        COUNTER = 0
+        self.do_state()
 
     def do_quit(self):
         """ Terminate the program """
@@ -105,14 +118,14 @@ class AudioPlayer(tk.Frame):
         print(f"Audio Player exiting.")
         exit(0)
 
-    def do_state(self, args):
+    def do_state(self):
         """ Display state of the player. """
         state = str(self._player.get_state()).split('.')[1]
         print(f'Current player state is {state}')
         print(f'Current song: {self._current_title}')
         print(f'Playback posn: {self._get_current_posn()}')
 
-    def do_time(self, args):
+    def do_time(self):
         """ Display current play time of current song. """
         if self._current_title is None:
             print("No song playing.")
@@ -124,11 +137,32 @@ class AudioPlayer(tk.Frame):
         if self._current_title is None:
             return f"No song playing."
         song = self._library.get_song(self._current_title)
-        runtime = song.runtime
+        details = song.meta_data()
+        runtime = details["runtime"]
+        total = runtime.split(':')
+        runtime_secs = int(total[0])*60 + int(total[1])
         remaining_secs = int(round(self._player.get_time() / 1000, 0))
-        mins = int(remaining_secs // 60)
-        secs = int(remaining_secs % 60)
-        return f"at {mins}:{secs:02d} ... of {runtime}"
+        print(runtime_secs)
+        def count():
+            global COUNTER
+            mins = int(remaining_secs // 60)
+            secs = int((remaining_secs % 60)+ COUNTER)
+            display = f"played {mins}:{secs}  of {runtime}"
+            lable = self._player_window.get_lable
+            lable.config(text=str(display))
+            if self._player.get_state() != vlc.State.Paused :
+                lable.after(1000, count)
+                COUNTER += 1
+
+        if self._player.get_state() != vlc.State.Paused and COUNTER < runtime_secs:
+            if self._player.get_state() != vlc.State.Stopped:
+                count()
+            else:
+                print("stopped")
+
+        else:
+            lable = self._player_window.get_lable
+            lable.config(text=str("error"))
 
     def do_help(self, args):
         """ List names of all methods that can run as commands. """
@@ -166,6 +200,10 @@ class AudioPlayer(tk.Frame):
         command = f"self.{cmd}({args})"
         eval(command)
 
+    def que_popup(self):
+        self._que_win = tk.Toplevel()
+        self._que = ClasslistWindow(self._que_win,self)
+
     @staticmethod
     def _valid_cmd(cmd):
         """ Check that a function to run the command exists in this class. """
@@ -174,6 +212,19 @@ class AudioPlayer(tk.Frame):
         else:
             return False
 
+
+    def _close_window(self):
+        """This is for closing the window"""
+        self._que_win.destroy()
+
+    def counter_label(self,label):
+
+        def count():
+            global COUNTER
+            COUNTER += 1
+            label.config(text=str(COUNTER))
+            label.after(1000,count)
+        count()
 
 if __name__ == "__main__":
     media_path = os.path.join(os.getcwd(), "mp3")   # path to a dir with mp3's
