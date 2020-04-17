@@ -92,6 +92,8 @@ class AudioPlayer(tk.Frame):
         """ Pause the player """
         if self._player.get_state() == vlc.State.Playing:
             self._player.pause()
+            global COUNTER
+            COUNTER = COUNTER - 1
         print(f"Player paused during playback of {self._current_title}")
 
 
@@ -109,7 +111,6 @@ class AudioPlayer(tk.Frame):
         print(f"Player stopped")
         global COUNTER
         COUNTER = 0
-        self.do_state()
 
     def do_quit(self):
         """ Terminate the program """
@@ -141,16 +142,13 @@ class AudioPlayer(tk.Frame):
         runtime = details["runtime"]
         total = runtime.split(':')
         runtime_secs = int(total[0])*60 + int(total[1])
-        remaining_secs = int(round(self._player.get_time() / 1000, 0))
-        print(runtime_secs)
         def count():
             global COUNTER
-            mins = int(remaining_secs // 60)
-            secs = int((remaining_secs % 60)+ COUNTER)
-            display = f"played {mins}:{secs}  of {runtime}"
+            secs = COUNTER
+            display = f"Played {secs:02d} seconds of {runtime_secs} seconds runtime"
             lable = self._player_window.get_lable
             lable.config(text=str(display))
-            if self._player.get_state() != vlc.State.Paused :
+            if self._player.get_state() != vlc.State.Paused and COUNTER < runtime_secs and self._player.get_state() != vlc.State.Stopped:
                 lable.after(1000, count)
                 COUNTER += 1
 
@@ -158,7 +156,7 @@ class AudioPlayer(tk.Frame):
             if self._player.get_state() != vlc.State.Stopped:
                 count()
             else:
-                print("stopped")
+                return
 
         else:
             lable = self._player_window.get_lable
