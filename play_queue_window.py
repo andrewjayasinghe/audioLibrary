@@ -58,12 +58,9 @@ class PlayQueueWindow(tk.Frame):
         resume_button.grid(row=1, column=1, sticky=tk.E, padx=20, pady=5)
         resume_button.bind("<Button-1>", self.do_resume)
 
-
         skip_button = tk.Button(self.bot_frame, text='Skip', width=10, bg="lightblue")
         skip_button.grid(row=2, column=0, sticky=tk.E, padx=20, pady=5)
         skip_button.bind("<Button-1>", self.do_next)
-
-
 
         self.song_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         self.song_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -79,6 +76,12 @@ class PlayQueueWindow(tk.Frame):
     def do_play(self, event):
         """Play a song specified by index. """
         self.index = self.song_listbox.index(tk.ACTIVE)
+
+        if len(self._songs_in_queue) == 0:
+            msg_str = 'No songs loaded on to the song Que'
+            messagebox.showinfo(title='Play Error', message=msg_str)
+            return
+
         song = self._songs_in_queue[self.index]
         song["play_count"] += 1
         song["last_played"] = datetime.now().strftime("%Y-%m-%d")
@@ -92,24 +95,19 @@ class PlayQueueWindow(tk.Frame):
         self.main_controller.update_play(song)
 
 
-        print(f"Playing file")
-
     def do_pause(self, event):
         """ Pause the player """
         if self._player.get_state() == vlc.State.Playing:
             self._player.pause()
-        print("Player paused")
 
     def do_resume(self, event):
         """ Resume playing """
         if self._player.get_state() == vlc.State.Paused:
             self._player.pause()
-        print(f"Playback resumed")
 
     def do_stop(self, event):
         """ Stop the player """
         self._player.stop()
-        print(f"Player stopped")
 
     def do_remove(self, event):
         """ Remove song from the player """
@@ -120,12 +118,11 @@ class PlayQueueWindow(tk.Frame):
 
     def do_next(self, event):
         """ Plays next song in the queue"""
-        print(len(self._songs_in_queue))
-        print(self.index)
         self.index += 1
         if self.index + 1> len(self._songs_in_queue):
-            messagebox.showinfo(title='Next', message="No Songs in Queue")
+            messagebox.showinfo(title='Next', message="No New Songs in Queue")
             return
+
         song = self._songs_in_queue[self.index]
         song["play_count"] += 1
         song["last_played"] = datetime.now().strftime("%Y-%m-%d")

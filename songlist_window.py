@@ -33,23 +33,23 @@ class SonglistWindow(tk.Frame):
 
         song_details = tk.Button(self.bot_frame, text='Song Info', width=10, bg="lightblue")
         song_details.grid(row=0, column=0, sticky=tk.E, padx=20, pady=5)
-        song_details.bind("<Button-1>", my_controller.get_song_info)
+        song_details.bind("<ButtonRelease-1>", my_controller.get_song_info)
 
         edit_details = tk.Button(self.bot_frame, text='Edit Info', width=10, bg="lightblue")
         edit_details.grid(row=0, column=1, sticky=tk.E, padx=20, pady=5)
-        edit_details.bind("<Button-1>", my_controller.song_details_popup)
+        edit_details.bind("<ButtonRelease-1>", my_controller.song_details_popup)
 
         search_song = tk.Button(self.mid_frame, text='Search', width=6, bg="lightgreen")
         search_song.grid(row=0, column=3, sticky=tk.E, padx=20, pady=5)
-        search_song.bind("<Button-1>", my_controller.search_song)
+        search_song.bind("<ButtonRelease-1>", my_controller.search_song)
 
         play = tk.Button(self.bot_frame, text='Open Player', width=10, bg="lightblue")
         play.grid(row=1, column=0, sticky=tk.E, padx=20, pady=5)
-        play.bind("<Button-1>", my_controller.play_queue_popup)
+        play.bind("<ButtonRelease-1>", my_controller.play_queue_popup)
 
         add_queue = tk.Button(self.bot_frame, text='Add to Queue', width=10, bg="lightblue")
         add_queue.grid(row=1, column=1, sticky=tk.E, padx=20, pady=5)
-        add_queue.bind("<Button-1>", my_controller.add_to_queue)
+        add_queue.bind("<ButtonRelease-1>", my_controller.add_to_queue)
 
         self.song_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         self.song_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)

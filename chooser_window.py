@@ -38,19 +38,19 @@ class ChooserWindow(tk.Frame):
 
         add_button = tk.Button(self.bot_frame, text='Add', width=10, bg="lightblue")
         add_button.grid(row=0, column=0, sticky=tk.E, padx=20, pady=5)
-        add_button.bind("<Button-1>", my_controller.add_callback)
+        add_button.bind("<ButtonRelease-1>", my_controller.add_callback)
 
         delete_button = tk.Button(self.bot_frame, text='Delete', width=10, bg="lightblue")
         delete_button.grid(row=0, column=1, sticky=tk.E, padx=20, pady=5)
-        delete_button.bind("<Button-1>", my_controller.delete_callback)
+        delete_button.bind("<ButtonRelease-1>", my_controller.delete_callback)
 
         help_button = tk.Button(self.bot_frame, text='Help', width=10, bg="lightblue")
         help_button.grid(row=1, column=0, sticky=tk.E, padx=20, pady=5)
-        help_button.bind("<Button-1>", self.display_help)
+        help_button.bind("<ButtonRelease-1>", self.display_help)
 
         songs_button = tk.Button(self.bot_frame, text='Songs List', width=10, bg="lightgreen")
         songs_button.grid(row=1, column=1, sticky=tk.E, padx=20, pady=5)
-        songs_button.bind("<Button-1>", my_controller.songlist_popup)
+        songs_button.bind("<ButtonRelease-1>", my_controller.songlist_popup)
 
 
     def get_url(self):
@@ -63,7 +63,7 @@ class ChooserWindow(tk.Frame):
 
     def display_help(self, event):
         """ Displays basic information of the player"""
-        msg_str = 'Main Window:\n1) Add or Remove a song by inputing the local file URL' \
+        msg_str = 'Main Window:\n1) Add or Remove a song by inputing the local file URL or use file > open' \
                   '\n2) View your songs by clicking "Songs List"\n' \
                   '\nSong List Window:\n1) Leave search bar empty to get full list of songs' \
                   '\n2) Select and hit "Open Player" to start the queue' \
