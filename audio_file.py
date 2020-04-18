@@ -34,10 +34,7 @@ class AudioFile(Base):
         else:
             raise ValueError("title and artist must be a string")
 
-        # if AudioFile.__valid_time(runtime):
         self.runtime = runtime
-        # else:
-        #     raise ValueError("runtime must be in correct format")
 
         if AudioFile.__valid_filename(file_location):
             self.filename = os.path.basename(file_location)
@@ -64,19 +61,6 @@ class AudioFile(Base):
     def meta_data(self) -> str:
         pass
 
-    # @property
-    # def rating(self) -> str:
-    #     """Gets the rating"""
-    #     rate = str(self.rating) + "/5"
-    #     return rate
-    #
-    # @rating.setter
-    # def rating(self, r: int) -> None:
-    #     """Sets the rating"""
-    #     if 5 >= int(r) > 0:
-    #         self.rating = str(r) + "/5"
-    #     else:
-    #         raise ValueError
 
     @property
     def get_date_added(self):
@@ -123,10 +107,3 @@ class AudioFile(Base):
             return True
         else:
             return False
-
-# if __name__ == '__main__':
-#     test = AudioFile(title= "Test",
-# 	artist= "Harish",
-# 	file_location="C:\\Users\\Harish-PC\\Google Drive\\Semester2\\ACIT 2515 (PYTHON)\\zLabFinal\\test.mp3",
-# 	runtime="2:51", date_added=datetime.now())
-#     print(test)

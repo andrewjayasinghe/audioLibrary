@@ -7,7 +7,7 @@ from song import Song
 
 class SongManager:
     """
-    The StudentManager class is responsible for coordinating all transactions
+    The SongManager class is responsible for coordinating all transactions
     between the higher level programs that use the data, and the actual
     database. Since each transaction is one of the crud operations (create,
     read, update, delete) we provide methods for each of these techniques.
@@ -19,7 +19,7 @@ class SongManager:
     """
 
     def __init__(self, song_db):
-        """ Creates a Student object and map to the Database """
+        """ Creates a Song object and map to the Database """
 
         if song_db is None or song_db == "":
             raise ValueError(f"Song database [{song_db}] not found")
@@ -29,7 +29,7 @@ class SongManager:
         self._db_session = sessionmaker(bind=engine)
 
     def add_song(self, new_song: Song):
-        """ Adds a new student to the student database """
+        """ Adds a new song to the song database """
 
         if new_song is None or not isinstance(new_song, Song):
             raise ValueError("Invalid Song Object")
@@ -45,7 +45,7 @@ class SongManager:
         return song_id
 
     def update_song(self, song):
-        """ Update existing student to match student_upd """
+        """ Update existing song to match song_upd """
         if song is None or not isinstance(song, Song):
             raise ValueError("Invalid Song Object")
 
@@ -59,12 +59,14 @@ class SongManager:
         existing_song.album = song.album
         existing_song.genre = song.genre
         existing_song.rating = song.rating
+        existing_song.last_played = song.last_played
+        existing_song.play_count = song.play_count
 
         session.commit()
         session.close()
 
     def get_song(self, file_location):
-        """ Return student object matching ID"""
+        """ Return song object matching file location"""
         if file_location is None or type(file_location) != str:
             raise ValueError("Invalid file_location")
 
@@ -97,7 +99,7 @@ class SongManager:
         session.close()
 
     def get_all_songs(self):
-        """ Return a list of all students in the DB """
+        """ Return a list of all songs in the DB """
         session = self._db_session()
 
         all_songs = session.query(Song).all()
@@ -105,13 +107,3 @@ class SongManager:
         session.close()
 
         return all_songs
-
-
-    # def delete_all_students(self):
-    #     """ Delete all students from the database """
-    #     session = self._db_session()
-    # 
-    #     session.query(Student).delete()
-    #     session.commit()
-    # 
-    #     session.close()

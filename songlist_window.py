@@ -20,80 +20,62 @@ class SonglistWindow(tk.Frame):
         self.bot_frame.grid(row=2, padx=30, pady=10)
         self.mid_frame.grid(row=1, padx=30, pady=10)
 
-        self.song_listbox = tk.Listbox(self.top_frame, width=30,
+        self.song_listbox = tk.Listbox(self.top_frame, width=40,
                                        selectmode=tk.BROWSE)
         self.song_scrollbar = tk.Scrollbar(self.top_frame, orient='vertical')
         self.song_scrollbar.config(command=self.song_listbox.yview)
         self.song_listbox.config(yscrollcommand=self.song_scrollbar.set)
 
-<<<<<<< Updated upstream
-        self.details = tk.Label(self.mid_frame, text='')
-        self.details.grid(row=0, column=1, sticky=tk.W, padx=5, pady=5)
-=======
-        tk.Label(self.mid_frame, text='Search:').grid(row=0, column=0, sticky=tk.E, padx=5, pady=5)
+        tk.Label(self.mid_frame, text='Filter:').grid(row=0, column=0, sticky=tk.E, padx=5, pady=5)
         self.search = tk.Entry(self.mid_frame, width=20)
         self.search.grid(row=0, column=1, sticky=tk.W, padx=5, pady=5)
 
-        self.details = tk.Label(self.bot_frame, text='Select and click details for more info')
-        # self.details.grid(row=1, column=1, sticky=tk.W, padx=5, pady=5)
-        self.details.pack()
 
->>>>>>> Stashed changes
+        song_details = tk.Button(self.bot_frame, text='Song Info', width=10, bg="lightblue")
+        song_details.grid(row=0, column=0, sticky=tk.E, padx=20, pady=5)
+        song_details.bind("<Button-1>", my_controller.get_song_info)
 
-        self.song_details = tk.Button(self.bot_frame, text='Details', width=10,
-                                      command=my_controller.get_song_info)
-        self.song_details.pack()
-        
-        self.edit_details = tk.Button(self.bot_frame, text='Edit Details', width=10,
-                                      command=my_controller.song_details_popup)
-        self.edit_details.pack()
-        
-<<<<<<< Updated upstream
-=======
-        self.search_song = tk.Button(self.bot_frame, text='Search', width=10,
-                                      command=my_controller.search_song)
-        self.search_song.pack()
+        edit_details = tk.Button(self.bot_frame, text='Edit Info', width=10, bg="lightblue")
+        edit_details.grid(row=0, column=1, sticky=tk.E, padx=20, pady=5)
+        edit_details.bind("<Button-1>", my_controller.song_details_popup)
 
-        
->>>>>>> Stashed changes
-        # self.delete_button = tk.Button(self.bot_frame, text='Delete', width=10,
-        #                               command=my_controller.delete_classlist)
-        # self.delete_button.pack()
-        # 
-        # self.close_button = tk.Button(self.bot_frame, text='Close', width=10,
-        #                            command=self._close_cb)
+        search_song = tk.Button(self.mid_frame, text='Search', width=6, bg="lightgreen")
+        search_song.grid(row=0, column=3, sticky=tk.E, padx=20, pady=5)
+        search_song.bind("<Button-1>", my_controller.search_song)
+
+        play = tk.Button(self.bot_frame, text='Open Player', width=10, bg="lightblue")
+        play.grid(row=1, column=0, sticky=tk.E, padx=20, pady=5)
+        play.bind("<Button-1>", my_controller.play_queue_popup)
+
+        add_queue = tk.Button(self.bot_frame, text='Add to Queue', width=10, bg="lightblue")
+        add_queue.grid(row=1, column=1, sticky=tk.E, padx=20, pady=5)
+        add_queue.bind("<Button-1>", my_controller.add_to_queue)
 
         self.song_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         self.song_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # self.close_button.pack()
 
 
 
-<<<<<<< Updated upstream
-    def set_names(self, songs):
-=======
     def set_songs(self, songs):
->>>>>>> Stashed changes
-        """ Update the listbox to display all names """
+        """ Update the listbox to display all songs """
         self.song_listbox.delete(0, tk.END)
         for song in songs:
             self.song_listbox.insert(tk.END, song)
 
     def selected_listbox(self):
+        """ Returns the index of the selcted listbox"""
         song = self.song_listbox.index(tk.ACTIVE)
         return song
 
     def selected_song_info(self, song):
-        self.song_info = f'{song["artist"]} - {song["album"]} ({song["runtime"]})  {song["rating"]}/5'
-        self.details['text'] = self.song_info
-<<<<<<< Updated upstream
-=======
+        """ Displays selected song information"""
+        msg_str = f'Album: {song["album"]}\nGenre: {song["genre"]}\nAdded: {song["date_added"]}\n' \
+                  f'Rating: {song["rating"]}/5\nRuntime: {song["runtime"]}'
+        messagebox.showinfo(title='Song Info', message=msg_str)
         
     def search_keyword(self):
+        """ Returns the searched keyword"""
         return self.search.get()
->>>>>>> Stashed changes
 
-    # def update_listbox(self):
-    #     self.name_listbox.delete(tk.ANCHOR)
 
