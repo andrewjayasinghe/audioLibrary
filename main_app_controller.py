@@ -137,7 +137,7 @@ class MainAppController(tk.Frame):
         requests.put("http://localhost:5000/song/" + file_path, json=song)
 
 
-    def get_song_info(self):
+    def get_song_info(self, event):
         """ Gets the song info from the index of listbox"""
         index = self._songlist.selected_listbox()
 
