@@ -1,70 +1,47 @@
-import datetime
+from audio_file import AudioFile
+# from usage_stats import UsageStats
+# from datetime import datetime
+from sqlalchemy import Column, Text
+from base import Base
 from datetime import datetime
-import os
-import typing
-from usage_stats import UsageStats
-from AudioFile import AudioFile
 
 
 class Song(AudioFile):
-    """Represents a song in the playlist
-    Author: Andrew jayasinghe
-    ID:A01016993
-    rating needs setter and getter
-    """
 
-    def __init__(self, title: str, artist: str = None, runtime: str =None, filepath: str=None, album: str=None):
-        """This method initializes the attributes"""
-        super().__init__(title, artist, runtime, filepath)
-        self._album = album
-        self._genre = []
-        self._one__genre_genre = None
+    album = Column(Text)
+    genre = Column(Text)
 
-    def description(self) -> str:
-        info = "{} by {} from the album {} added on {}. Runtime is {}. ".format(self._title, self._artist, self._album,
-                                                                                self._date_added, self._runtime)
-        if self._usage.play_count != 0 :
-            info += "Play count is {}. Last played on: {} ".format(self._usage.play_count, self._usage.last_played)
-
-        return info
-
-    def meta_data(self):
-
-        keys = ['title', 'artist', 'album', 'date_added', 'runtime', "pathname", 'filename', 'play_count',
-                'rating', 'last played', "Genre"]
-        values = [self._title, self._artist, self._album, self._date_added, self._runtime, self._path, self._file,
-                  self._usage.play_count, self._user_rating, self._usage.last_played, self._genre]
-        my_dict = dict(zip(keys, values))
-        return my_dict
-
-    def set_genre(self):
-        gen = input("enter a genre: ")
-        if "," in gen:
-            new = gen.split(",")
-            for i in new:
-                self._genre.append(i)
+    def __init__(self, title: str, artist: str, runtime: str, file_location: str,
+                 album: str, genre: str = None):
+        super().__init__(title, artist, runtime, file_location)
+        if type(album) is str:
+            self.album = album
         else:
-            print("do you want to add more stuff?")
+            raise ValueError("album name must be a string")
 
-    def display_genre(self):
-        list =[]
-        for i in self._genre:
-            list.append(i)
-        return list
+        if genre is not None:
+            self.genre = genre
+        self.file_location = file_location
 
-    @property
-    def music_genre(self):
-        return self._one__genre
-
-    @music_genre.setter
-    def music_genre(self,value):
-        self._one__genre = value
-        if "," in self._one__genre and type(self._one__genre) is str:
-            gen = self._one__genre.split(",")
-            for i in gen:
-                self._genre.append(i)
-        else:
-            print('please enter good stuff')
+    def get_description(self) -> str:
+        """Returns description of a song"""
+        desc = "{} by {} from the album {} added on {}. Runtime is {}. "\
+            .format(self.title, self.artist, self.album, self.usage_stats.date_added, self.runtime)
+        if self.usage_stats.last_played is not None:
+            desc += "Last played on {}. ".format(self.usage_stats.last_played)
+        if self.rating != "" and self._usage_stats.last_played is not None:
+            desc += "User rating is {}.".format(self.rating)
+        return desc
 
     def get_location(self):
-        return self._filepath
+        return self.file_location
+
+    @property
+    def get_runtime(self):
+        return self.runtime
+
+    def meta_data(self) -> dict:
+        data = {"title": self.title, "artist": self.artist, "album": self.album,
+                "date_added": self.date_added, "runtime": self.runtime, "file_location": self.file_location,
+                "rating": self.rating, "genre": self.genre, "last_played": self.last_played, "play_count": self.play_count}
+        return data
